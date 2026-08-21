@@ -1,0 +1,56 @@
+
+1. Project Brief
+Film production studios face massive financial and legal risks when scheduling child actors, as labor laws dictate strict working hours, mandatory breaks, and hard wrap times that vary by state and age.
+The Minor Working-Hour Auditor is an autonomous AI agent built for the Google Cloud "Agentic Cinema" Hackathon. It acts as a legal compliance co-pilot for production managers. By ingesting natural language schedule changes (e.g., "Push Scene 12 by two hours"), the agent queries a ClickHouse database containing cast data and state labor laws, calculates time deltas, and actively blocks or flags schedule changes that violate child labor regulations.
+2. Project Charter
+ * Objective: Build and deploy a production-grade, multi-step AI agent that successfully integrates Google Gemini with ClickHouse to win the $7,500 track prize in the Agentic Cinema Hackathon.
+ * Target Deadline: September 7, 2026 (Official Hackathon Submission Deadline).
+ * In Scope:
+   * Natural language parsing of schedule adjustments.
+   * Dynamic SQL generation to query ClickHouse via the Model Context Protocol (MCP).
+   * Compliance calculation for maximum daily hours and latest wrap times.
+   * Basic chat interface (Streamlit or terminal) to demonstrate functionality.
+ * Out of Scope:
+   * Writing data back to the database (Read-only for safety and scope control).
+   * Complex UI/UX dashboards (focus is on agentic reasoning).
+   * Handling non-minor actors or complex union (SAG-AFTRA) penalty calculations.
+3. Solution Architecture
+The architecture is designed for speed of development, transparency of the agent's reasoning, and strict separation of concerns.
+Core Tech Stack
+ * LLM Engine: Google Gemini 2.5 Flash (via google-genai Python SDK).
+ * Integration Layer: Model Context Protocol (MCP) using the official ClickHouse MCP server.
+ * Database: ClickHouse (Local Docker container or Free Cloud tier).
+ * Frontend: Streamlit (Python-based, zero-config web UI).
+Data Flow
+ * User Input: The user submits a schedule change via the Streamlit UI.
+ * Agent Invocation: The Python backend sends the prompt to Gemini, prepended with strict System Instructions detailing the database schema and legal audit workflow.
+ * Tool Calling: Gemini determines it needs data and outputs a tool-call request containing a dynamic SQL query.
+ * MCP Execution: The Python app intercepts the tool call, routes the SQL query through the MCP stdio client to the ClickHouse MCP server, and retrieves the JSON results.
+ * Agent Resolution: The database results are passed back to Gemini, which performs the time-delta calculations and generates a final Compliance Audit Report.
+4. Architectural Decision Records (ADRs)
+ADR 1: Direct-Drive Prompting vs. Agent Frameworks
+ * Context: We need to orchestrate tool calls between Gemini and ClickHouse.
+ * Decision: We will use a pure Python while loop with the native google-genai SDK instead of abstraction-heavy frameworks like LangChain or LlamaIndex.
+ * Rationale: Hackathon timelines do not permit debugging black-box framework abstractions. A manual loop gives us absolute control over the MCP payload, makes debugging trivial, and allows us to easily print the exact SQL queries to the UI for the judging video.
+ADR 2: Flattened Database Schema
+ * Context: LLMs struggle with highly normalized databases requiring complex JOIN statements and nested JSON time structures.
+ * Decision: We will denormalize the ClickHouse schema into three flat tables (cast_members, labor_laws, daily_schedule) and store times as 24-hour integers (e.g., 20 instead of 8:00 PM).
+ * Rationale: This drastically reduces the cognitive load on the LLM, effectively eliminating SQL hallucination and calculation errors.
+ADR 3: Standard Input/Output (stdio) MCP Transport
+ * Context: The MCP server needs to communicate with the host application.
+ * Decision: We will run the @clickhouse/mcp-server as a local subprocess using stdio rather than setting up a remote HTTP/SSE transport.
+ * Rationale: Simplifies deployment for the hackathon. The Python app can boot the MCP node process locally, requiring zero network configuration or authentication routing.
+5. Risks & Mitigation Strategies
+| Risk | Impact | Mitigation Strategy |
+|---|---|---|
+| SQL Injection / Data Destruction | High | Configure the ClickHouse user with strictly READ ONLY permissions. Enforce a rule in the Gemini System Prompt forbidding INSERT, UPDATE, or DROP commands. |
+| LLM Math Hallucinations | Medium | Gemini handles implicit math poorly. The system prompt will mandate a strict Chain-of-Thought: Query Data -> State the Law -> Calculate Delta -> Output Verdict. |
+| MCP Subprocess Crashes | Low | Implement a try/except block in the Python tool-calling loop. If the MCP server fails, the app feeds an error string back to Gemini so the agent can gracefully report a database outage instead of crashing the app. |
+6. Assumptions
+ * A1: The hackathon judges prioritize functional backend integrations (Google Cloud + ClickHouse) over frontend aesthetics.
+ * A2: The Gemini 2.5 Flash context window is large enough to handle the JSON payload returned by ClickHouse without truncation (we will enforce SQL LIMIT clauses to guarantee this).
+ * A3: State labor laws can be accurately represented via simple min_age, max_age, and max_daily_hours integer rules without requiring complex qualitative logic.
+7. Future Enhancements (Post-Hackathon)
+ * Write-Back Capabilities: Allowing the agent to execute UPDATE statements to automatically save the revised, compliant schedule back to ClickHouse.
+ * Multi-Agent Routing: Adding a secondary "Union Rep Agent" that specifically audits SAG-AFTRA meal penalty violations alongside state labor laws.
+ * PDF Ingestion: Integrating Google Cloud DocumentAI so the agent can ingest unstructured PDF call sheets and automatically populate the ClickHouse daily_schedule table.
