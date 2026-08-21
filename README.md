@@ -88,3 +88,61 @@ python mcp_server.py
 #### MCP Tool Signature
 * `run_select_query(sql: string) -> { columns: string[], rows: any[][] }`
 * **Read-only enforcement**: Only `SELECT`, `WITH`, `SHOW`, `DESCRIBE`, `EXPLAIN`, and `EXISTS` statements are allowed; all DDL/DML mutations are strictly blocked.
+
+---
+
+## 🖥️ Running the Streamlit App
+
+### 1. Configure Gemini API Key
+
+Add your Gemini API key to `.env` (or enter it in the Streamlit UI sidebar):
+
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+### 2. Launch the Application
+
+Start the Streamlit dashboard:
+
+```bash
+streamlit run app.py
+```
+
+The web interface will open at `http://localhost:8501`.
+
+---
+
+## 🎬 Demo Scenarios & Sample Inputs
+
+Use these sample natural language schedule change descriptions to test the system during the demo video:
+
+### 🟡 Scenario 1: The Contested 16–18 Band Showcase (Quality of Idea)
+* **Prompt:** `Extend Kiernan Shipka's shoot on 2026-08-25 from 08:00-16:00 to 08:00-17:00 for Scene Sc_103.`
+* **Cast Member:** Kiernan Shipka (`cast_003`, Age 16)
+* **Statutory Conflict:** Triggers the statutory tension between **8 CCR §11760** (10-hour workplace presence allowance on school days) and **Cal. Labor Code §1308.7** (8-hour statutory cap).
+* **Expected UI Payoff:** Visibly renders an amber alert badge with `"⚠️ Contested Interpretation — Unconfirmed by Counsel"` and a detailed legal explanation explaining the more-protective-governs canon.
+
+### 🔴 Scenario 2: Daily Work Hours Overtime Violation
+* **Prompt:** `Extend Maya Lin's shoot on 2026-08-25 from 09:00 to 15:00 for Scene Sc_101.`
+* **Cast Member:** Maya Lin (`cast_001`, Age 6)
+* **Statute:** 8 CCR §11760 (Max 4.0 work hours per day for ages 6–8 on school days).
+* **Expected UI Payoff:** Flags a `CRITICAL` statutory violation (`max_daily_work_hours_exceeded` — 6.0h proposed vs 4.0h max allowed).
+
+### 🔴 Scenario 3: Night Curfew Wrap Violation
+* **Prompt:** `Reschedule Jacob Tremblay's call on 2026-08-25 to 15:00-23:00 for Scene Sc_102.`
+* **Cast Member:** Jacob Tremblay (`cast_002`, Age 11)
+* **Statute:** Cal. Labor Code §1308.7 & 8 CCR §11760 (Mandatory wrap by 22:00 on school nights).
+* **Expected UI Payoff:** Flags a `CRITICAL` curfew violation (`late_wrap_curfew_violation` — wrapping at 23:00 past the 22:00 statutory limit).
+
+### 🟢 Scenario 4: Fully Compliant Schedule Adjustment
+* **Prompt:** `Adjust Maya Lin's call on 2026-08-25 to 09:30-13:00 (3.5 hours) for Scene Sc_101.`
+* **Cast Member:** Maya Lin (`cast_001`, Age 6)
+* **Expected UI Payoff:** Green status banner `✅ COMPLIANT — SCHEDULE CHANGE APPROVED` with zero violations.
+
+---
+
+## 🔒 Frozen Scope Compliance Note
+* `mcp_server.py`, `schema.sql`, `seed_data_CA.sql`, `setup_db.py`, and `verify_mcp.py` are strictly maintained in their original frozen states.
+* Compliance auditing logic is executed using `google-genai` with Gemini 2.5 Flash via standard I/O MCP calls to ClickHouse.
+
