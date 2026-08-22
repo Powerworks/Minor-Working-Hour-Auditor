@@ -10,6 +10,22 @@ This tool acts as a legal compliance co-pilot for film production managers. It i
 *   **Database:** ClickHouse
 *   **Frontend:** Streamlit
 
+```mermaid
+flowchart LR
+    User["Production Manager"] -->|"NL schedule change\n(e.g. \"Push Scene 12 by two hours\")"| UI["Streamlit UI\napp.py"]
+    UI --> Auditor["Gemini Compliance Auditor\nauditor.py\n(google-genai, Gemini 2.5 Flash)"]
+    Auditor -->|"function call:\nrun_select_query(sql)"| MCPClient["MCP Client\nmcp_client.py"]
+    MCPClient <-->|"stdio subprocess"| MCPServer["ClickHouse MCP Server\nmcp_server.py\n(read-only guardrails)"]
+    MCPServer -->|"SELECT"| DB[("ClickHouse\ncast_members\ndaily_schedule\nlabor_law_rules")]
+    DB -->|"columns + rows"| MCPServer
+    MCPServer --> MCPClient
+    MCPClient --> Auditor
+    Auditor -->|"Audit Report JSON\n(compliant / violations /\nrule_confidence)"| UI
+    UI -->|"pass banner, violation cards,\ncontested-interpretation badge"| User
+```
+
+The Gemini engine never reasons about labor law from its own training data — every rule, cap, and citation in the Audit Report is sourced from a queried `labor_law_rules` row via the MCP tool call above.
+
 ## ⚙️ How it Works
 1. User inputs a schedule adjustment (e.g., *"Push Scene 12 by two hours"*).
 2. Gemini receives the prompt under a strict "Lead Legal Compliance Auditor" system instruction.
@@ -145,4 +161,8 @@ Use these sample natural language schedule change descriptions to test the syste
 ## 🔒 Frozen Scope Compliance Note
 * `mcp_server.py`, `schema.sql`, `seed_data_CA.sql`, `setup_db.py`, and `verify_mcp.py` are strictly maintained in their original frozen states.
 * Compliance auditing logic is executed using `google-genai` with Gemini 2.5 Flash via standard I/O MCP calls to ClickHouse.
+
+## 📄 License
+
+MIT — see [LICENSE](./LICENSE).
 
