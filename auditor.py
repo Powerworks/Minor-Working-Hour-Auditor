@@ -227,11 +227,11 @@ class AuditorEngine:
             turn += 1
             trace_logs.append({
                 "step": f"Gemini Turn {turn}",
-                "status": "Calling Gemini 2.5 Flash...",
+                "status": "Calling Gemini 3.6 Flash...",
             })
 
             response = client.models.generate_content(
-                model="gemini-2.5-flash",
+                model="gemini-3.6-flash",
                 contents=contents,
                 config=config,
             )

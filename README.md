@@ -5,7 +5,7 @@ An autonomous AI agent built for the Google Cloud **Agentic Cinema Hackathon**.
 This tool acts as a legal compliance co-pilot for film production managers. It ingests natural language schedule changes, queries a ClickHouse database of cast data and state labor laws via the Model Context Protocol (MCP), and actively flags schedule changes that violate child labor regulations.
 
 ## 🏗️ Architecture
-*   **LLM Engine:** Google Gemini 2.5 Flash (`google-genai` Python SDK)
+*   **LLM Engine:** Google Gemini 3.6 Flash (`google-genai` Python SDK)
 *   **Integration Layer:** `@clickhouse/mcp-server` via standard I/O
 *   **Database:** ClickHouse
 *   **Frontend:** Streamlit
@@ -13,7 +13,7 @@ This tool acts as a legal compliance co-pilot for film production managers. It i
 ```mermaid
 flowchart LR
     User["Production Manager"] -->|"NL schedule change\n(e.g. \"Push Scene 12 by two hours\")"| UI["Streamlit UI\napp.py"]
-    UI --> Auditor["Gemini Compliance Auditor\nauditor.py\n(google-genai, Gemini 2.5 Flash)"]
+    UI --> Auditor["Gemini Compliance Auditor\nauditor.py\n(google-genai, Gemini 3.6 Flash)"]
     Auditor -->|"function call:\nrun_select_query(sql)"| MCPClient["MCP Client\nmcp_client.py"]
     MCPClient <-->|"stdio subprocess"| MCPServer["ClickHouse MCP Server\nmcp_server.py\n(read-only guardrails)"]
     MCPServer -->|"SELECT"| DB[("ClickHouse\ncast_members\ndaily_schedule\nlabor_law_rules")]
@@ -160,7 +160,7 @@ Use these sample natural language schedule change descriptions to test the syste
 
 ## 🔒 Frozen Scope Compliance Note
 * `mcp_server.py`, `schema.sql`, `seed_data_CA.sql`, `setup_db.py`, and `verify_mcp.py` are strictly maintained in their original frozen states.
-* Compliance auditing logic is executed using `google-genai` with Gemini 2.5 Flash via standard I/O MCP calls to ClickHouse.
+* Compliance auditing logic is executed using `google-genai` with Gemini 3.6 Flash via standard I/O MCP calls to ClickHouse.
 
 ## 📄 License
 
