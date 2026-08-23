@@ -26,6 +26,14 @@ flowchart LR
 
 The Gemini engine never reasons about labor law from its own training data — every rule, cap, and citation in the Audit Report is sourced from a queried `labor_law_rules` row via the MCP tool call above.
 
+### 🌍 Jurisdiction Scope
+
+Film productions shoot across many countries and hire minors of many nationalities, so we considered scoping this beyond California from the start. `labor_law_rules` is deliberately jurisdiction-agnostic — `state` is the lookup key the agent joins on, not a hardcoded assumption — so adding another jurisdiction is an additive data change (new sourced rows), not a schema or agent redesign.
+
+We scoped the hackathon submission to California only. Properly sourcing minor-labor-hour law for even one additional jurisdiction well enough to trust in an audit tool is real legal research, not a lookup — reconciling California's own two governing provisions (8 CCR §11760 vs. Lab. Code §1308.7) for a single age band already surfaced an unresolved statutory conflict (see `seed_data_CA.sql`). Repeating that per-jurisdiction across, say, the UK, Canada, and the EU in the time remaining before submission risked shipping shallow, unverified data under the banner of "global support," which is worse than an honestly-scoped single jurisdiction that's actually correct.
+
+**Expanding coverage is the natural next step post-hackathon:** source `seed_data_<COUNTRY>.sql` per jurisdiction, following the same pattern in `seed_data_CA.sql` — cite primary sources, flag any inter-provision conflicts explicitly via `rule_confidence: contested_interpretation` rather than silently resolving them, and verify against real audit scenarios before merging.
+
 ## ⚙️ How it Works
 1. User inputs a schedule adjustment (e.g., *"Push Scene 12 by two hours"*).
 2. Gemini receives the prompt under a strict "Lead Legal Compliance Auditor" system instruction.
