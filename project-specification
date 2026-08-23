@@ -4,7 +4,7 @@ Film production studios face massive financial and legal risks when scheduling c
 The Minor Working-Hour Auditor is an autonomous AI agent built for the Google Cloud "Agentic Cinema" Hackathon. It acts as a legal compliance co-pilot for production managers. By ingesting natural language schedule changes (e.g., "Push Scene 12 by two hours"), the agent queries a ClickHouse database containing cast data and state labor laws, calculates time deltas, and actively blocks or flags schedule changes that violate child labor regulations.
 2. Project Charter
  * Objective: Build and deploy a production-grade, multi-step AI agent that successfully integrates Google Gemini with ClickHouse to win the $7,500 track prize in the Agentic Cinema Hackathon.
- * Target Deadline: September 7, 2026 (Official Hackathon Submission Deadline).
+ * Target Deadline: September 9, 2026, 2:00 PM PDT (Official Hackathon Submission Deadline, per agentic-cinema.devpost.com/rules — corrected from an earlier Sept 7 estimate).
  * In Scope:
    * Natural language parsing of schedule adjustments.
    * Dynamic SQL generation to query ClickHouse via the Model Context Protocol (MCP).
