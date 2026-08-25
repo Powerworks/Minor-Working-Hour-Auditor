@@ -1,0 +1,11 @@
+FROM clickhouse/clickhouse-server:latest
+
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-pip && \
+    pip3 install --no-cache-dir clickhouse-connect python-dotenv && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY schema.sql seed_data_CA.sql setup_db.py /app/
+COPY docker/init-seed-data.sh /docker-entrypoint-initdb.d/init-seed-data.sh
+RUN chmod +x /docker-entrypoint-initdb.d/init-seed-data.sh
+
+EXPOSE 8123

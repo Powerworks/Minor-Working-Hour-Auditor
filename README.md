@@ -4,6 +4,16 @@ An autonomous AI agent built for the Google Cloud **Agentic Cinema Hackathon**.
 
 This tool acts as a legal compliance co-pilot for film production managers. It ingests natural language schedule changes, queries a ClickHouse database of cast data and state labor laws via the Model Context Protocol (MCP), and actively flags schedule changes that violate child labor regulations.
 
+## 🚀 Live Demo
+
+**App:** https://mwha-app-997804730163.us-central1.run.app
+
+Hosted entirely on Google Cloud Run — two services in the `minor-working-hour-auditor` project:
+- **`mwha-app`** — the Streamlit frontend + Gemini compliance-logic + MCP client/server (spawned as a stdio subprocess within the same container).
+- **`mwha-clickhouse`** — the ClickHouse database, self-seeding on every cold start from `schema.sql` + `seed_data_CA.sql` via the official image's `/docker-entrypoint-initdb.d/` hook, so the demo dataset is always reproducible from source rather than depending on a persistent disk.
+
+Both services run with `--no-cpu-throttling` (CPU always allocated) — Cloud Run's default CPU-throttling model only allocates full CPU during live request handling, which stalls background startup work like the ClickHouse seeding script for several minutes; always-on CPU keeps cold starts fast and reliable for judging.
+
 ## 🏗️ Architecture
 *   **LLM Engine:** Google Gemini 3.6 Flash (`google-genai` Python SDK)
 *   **Integration Layer:** `@clickhouse/mcp-server` via standard I/O
