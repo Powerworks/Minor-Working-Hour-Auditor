@@ -22,7 +22,7 @@ Both services run with `--no-cpu-throttling` (CPU always allocated) — Cloud Ru
 
 ```mermaid
 flowchart LR
-    User["Production Manager"] -->|"NL schedule change\n(e.g. \"Push Scene 12 by two hours\")"| UI["Streamlit UI\napp.py"]
+    User["Production Manager"] -->|"NL schedule change\n(e.g. Push Scene 12 by two hours)"| UI["Streamlit UI\napp.py"]
     UI --> Auditor["Gemini Compliance Auditor\nauditor.py\n(google-genai, Gemini 3.6 Flash)"]
     Auditor -->|"function call:\nrun_select_query(sql)"| MCPClient["MCP Client\nmcp_client.py"]
     MCPClient <-->|"stdio subprocess"| MCPServer["ClickHouse MCP Server\nmcp_server.py\n(read-only guardrails)"]
