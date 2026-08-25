@@ -55,9 +55,9 @@ ORDER BY (shoot_date, scene_number, cast_id);
 
 -- Demo Cast Members (minor actors across California jurisdictions)
 INSERT INTO cast_members (cast_id, production_id, name, date_of_birth, production_state, role) VALUES
-    ('cast_001', 'prod_demo', 'Maya Lin', '2019-09-15', 'CA', 'Supporting (Age 6)'),
-    ('cast_002', 'prod_demo', 'Jacob Tremblay', '2014-10-05', 'CA', 'Lead (Age 11)'),
-    ('cast_003', 'prod_demo', 'Kiernan Shipka', '2009-11-10', 'CA', 'Lead Teen (Age 16)');
+    ('cast_001', 'prod_demo', 'Ava Kowalski', '2019-09-15', 'CA', 'Supporting (Age 6)'),
+    ('cast_002', 'prod_demo', 'Eli Marchetti', '2014-10-05', 'CA', 'Lead (Age 11)'),
+    ('cast_003', 'prod_demo', 'Rowan Castellan', '2009-11-10', 'CA', 'Lead Teen (Age 16)');
 
 -- Demo Daily Schedule for end-to-end audit query verification
 INSERT INTO daily_schedule (scene_number, cast_id, shoot_date, start_time, end_time, location_state) VALUES

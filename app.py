@@ -206,7 +206,7 @@ with st.sidebar:
             for row in cast_data["rows"]:
                 st.markdown(f"- **{row[1]}** (`{row[0]}`) — {row[3]} *(DOB: {row[2]})*")
     except Exception:
-        st.markdown("- Maya Lin (`cast_001`, Age 6)\n- Jacob Tremblay (`cast_002`, Age 11)\n- Kiernan Shipka (`cast_003`, Age 16)")
+        st.markdown("- Ava Kowalski (`cast_001`, Age 6)\n- Eli Marchetti (`cast_002`, Age 11)\n- Rowan Castellan (`cast_003`, Age 16)")
 
     st.divider()
     st.caption("Google Cloud Agentic Cinema Hackathon • ClickHouse MCP • Gemini 2.5 Flash")
@@ -233,20 +233,20 @@ col_s1, col_s2, col_s3, col_s4 = st.columns(4)
 
 scenario_prompt = ""
 with col_s1:
-    if st.button("🟡 Contested 16-18 Case\n(Kiernan Shipka)", use_container_width=True, help="Triggers the statutory conflict between §11760 and §1308.7"):
-        scenario_prompt = "Extend Kiernan Shipka's shoot on 2026-08-25 from 08:00-16:00 to 08:00-17:00 for Scene Sc_103."
+    if st.button("🟡 Contested 16-18 Case\n(Rowan Castellan)", use_container_width=True, help="Triggers the statutory conflict between §11760 and §1308.7"):
+        scenario_prompt = "Extend Rowan Castellan's shoot on 2026-08-25 from 08:00-16:00 to 08:00-17:00 for Scene Sc_103."
 
 with col_s2:
-    if st.button("🔴 Daily Hours Overtime\n(Maya Lin, Age 6)", use_container_width=True, help="Exceeds the 4.0-hour max work hours for 6-8 year olds"):
-        scenario_prompt = "Extend Maya Lin's shoot on 2026-08-25 from 09:00 to 15:00 for Scene Sc_101."
+    if st.button("🔴 Daily Hours Overtime\n(Ava Kowalski, Age 6)", use_container_width=True, help="Exceeds the 4.0-hour max work hours for 6-8 year olds"):
+        scenario_prompt = "Extend Ava Kowalski's shoot on 2026-08-25 from 09:00 to 15:00 for Scene Sc_101."
 
 with col_s3:
-    if st.button("🔴 Night Curfew Violation\n(Jacob Tremblay, Age 11)", use_container_width=True, help="Wraps past the mandatory 22:00 curfew"):
-        scenario_prompt = "Reschedule Jacob Tremblay's call on 2026-08-25 to 15:00-23:00 for Scene Sc_102."
+    if st.button("🔴 Night Curfew Violation\n(Eli Marchetti, Age 11)", use_container_width=True, help="Wraps past the mandatory 22:00 curfew"):
+        scenario_prompt = "Reschedule Eli Marchetti's call on 2026-08-25 to 15:00-23:00 for Scene Sc_102."
 
 with col_s4:
-    if st.button("🟢 Compliant Call Change\n(Maya Lin, Age 6)", use_container_width=True, help="Within statutory 4.0-hour limit"):
-        scenario_prompt = "Adjust Maya Lin's call on 2026-08-25 to 09:30-13:00 (3.5 hours) for Scene Sc_101."
+    if st.button("🟢 Compliant Call Change\n(Ava Kowalski, Age 6)", use_container_width=True, help="Within statutory 4.0-hour limit"):
+        scenario_prompt = "Adjust Ava Kowalski's call on 2026-08-25 to 09:30-13:00 (3.5 hours) for Scene Sc_101."
 
 # Text input for schedule change
 if scenario_prompt:
@@ -254,7 +254,7 @@ if scenario_prompt:
 
 user_prompt = st.text_area(
     "Enter Natural Language Schedule Change Request:",
-    value=st.session_state.get("prompt_input", "Extend Kiernan Shipka's shoot on 2026-08-25 from 08:00-16:00 to 08:00-17:00 for Scene Sc_103."),
+    value=st.session_state.get("prompt_input", "Extend Rowan Castellan's shoot on 2026-08-25 from 08:00-16:00 to 08:00-17:00 for Scene Sc_103."),
     height=90,
     placeholder="e.g., Push Scene 103 call for cast_003 to wrap at 17:00 on 2026-08-25",
 )

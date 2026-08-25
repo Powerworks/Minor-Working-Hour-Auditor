@@ -637,7 +637,7 @@ def run_audit(prompt: str, api_key: Optional[str] = None) -> Tuple[AuditReport, 
 
 if __name__ == "__main__":
     print("Testing AuditorEngine...")
-    test_prompt = "Extend Kiernan Shipka's shoot on 2026-08-25 from 08:00 to 17:00 for Scene Sc_103."
+    test_prompt = "Extend Rowan Castellan's shoot on 2026-08-25 from 08:00 to 17:00 for Scene Sc_103."
     report, trace = run_audit(test_prompt)
     print("\n--- Audit Report Output ---")
     print(report.model_dump_json(indent=2))
